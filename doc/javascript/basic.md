@@ -1003,7 +1003,8 @@ use strict 指的是严格运行模式，在这种模式对 js 的使用添加�
 #### 49. instanceof 的作用？
 
 ```js
-// instanceof 运算符用于判断构造函数的 prototype 属性是否出现在对象的原型链中的任何位置。
+// instanceof 运算符用于检测构造函数的 prototype 属性是否出现在某个实例对象的原型链。
+// 实例对象 instanceof 构造函数
 // 实现：
 
 function myInstanceof(left, right) {
@@ -1071,8 +1072,7 @@ function objectFactory() {
 ```
 hasOwnProperty
 
-所有继承了 Object 的对象都会继承到 hasOwnProperty 方法。这个方法可以用来检测一个对象是否含有特定的自身属性，和
-in 运算符不同，该方法会忽略掉那些从原型链上继承到的属性。
+所有继承了 Object 的对象都会继承到 hasOwnProperty 方法。这个方法可以用来检测一个对象是否含有特定的自身属性，和in 运算符不同，该方法会忽略掉那些从原型链上继承到的属性。
 ```
 
 详细资料可以参考：
@@ -1085,8 +1085,7 @@ in 运算符不同，该方法会忽略掉那些从原型链上继承到的属�
 ```
 JSON 是一种数据交换格式，基于文本，优于轻量，用于交换数据。
 
-JSON 可以表示数字、布尔值、字符串、null、数组（值的有序序列），以及由这些值（或数组、对象）所组成的对象（字符串与
-值的映射）。
+JSON 可以表示数字、布尔值、字符串、null、数组（值的有序序列），以及由这些值（或数组、对象）所组成的对象（字符串与值的映射）。
 
 JSON 使用 JavaScript 语法，但是 JSON 格式仅仅是一个文本。文本可以被任何编程语言读取及作为数据格式传递。
 ```
@@ -1546,7 +1545,7 @@ require.js 的核心原理是通过动态创建 script 脚本来异步引入模�
 [《ECMAScript 6 实现了 class，对 JavaScript 前端开发有什么意义？》](https://www.zhihu.com/question/29789315)
 [《Class 的基本语法》](http://es6.ruanyifeng.com/#docs/class)
 
-#### 70. documen.write 和 innerHTML 的区别？
+#### 70. document.write 和 innerHTML 的区别？
 
 ```
 document.write 的内容会代替整个文档内容，会重写整个页面。

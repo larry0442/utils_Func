@@ -185,6 +185,9 @@ class _PromiseA {
   finally () {
 
   }
+  catch () {
+    
+  }
 }
 
 module.exports = _PromiseA;
