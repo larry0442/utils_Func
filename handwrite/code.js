@@ -124,4 +124,84 @@ function check(n) {
   return checkmap(n);
 }
 
-console.log(check(60));
+
+/**
+ * 移除字符串最后一个指定的目标字符串
+ * 使用字符串方法
+ * **/
+function delLastString(str, target) {
+  let index = str.lastIndexOf(target);
+  if(index > -1){
+    return str.slice(0,index) + str.slice(index + 1);
+  }
+  return str;
+}
+
+/***
+ * 正则 / 字符串处理
+ * 将下划线_命名改为大驼峰命名
+ * dufbh_edjrf  --> DufbhEdjrf
+*/
+function toCamelCase(str) {
+  const reg = /(^|_)(\w)/g;
+  return str.replace(reg, (match,$1,$2)=>$2.toUpperCase());
+}
+function strToCamelCase(str) {
+  return str
+  .split('_')
+  .map(item=>{
+    if(item === ''){
+      return '_'
+    }
+    return item[0].toUpperCase()+item.slice(1);
+  })
+  .join('');
+}
+
+/**
+ * 大小写转换
+ * **/
+function transCode(str) {
+  return str.replace(/([a-z]*)([A-Z]*)/g, (m, $1, $2)=> {
+    return $1.toUpperCase() + $2.toLowerCase();
+  })
+}
+
+function transCode1(str) {
+  if(!str.length) {
+    return 'error!'
+  }
+  return str.split('').map(item => {
+    let temp = item.charCodeAt();
+    if(97<=temp<=122){
+      return item.toUpperCase();
+    }
+    if(65<=temp<=90) {
+      return item.toLowerCase();
+    }
+    return item;
+  }).join('');
+}
+
+/**
+ * 统计目标字符串在指定字符串出现的次数
+ * aaabdcaasda  aa在其中出现 3次
+ *
+ * **/
+function getTotalStr(str, target) {
+  let count = 0;
+  if(!target){
+    return count;
+  }
+  while(str.includes(target)) {
+    count++;
+    str = str.substring(str.indexOf(target)+1);
+  }
+  return count;
+}
+function getTotalStrByReg(str, target) {
+  // 正向零宽断言 假设等于target·
+  const matchs = str.match(new RegExp(`(?=${target})`, 'g'));
+  return matchs? matchs.length: 0;
+}
+console.log(getTotalStrByReg('aaabaabsa','aa'));
