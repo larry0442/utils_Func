@@ -88,35 +88,35 @@ function trimStr (str, dir) {
  * 
  * **/
 
- // 递归 数字变大，就会变得很慢
+// 递归 数字变大，就会变得很慢
 
- function func(n) {
-   if(n === 0) {
-     return 0;
-   }else if( n< 0){
-     return Infinity;
-   }
-   return Math.min(Math.min(func(n-1), func(n-2)), func(n-5)) + 1;
- }
+function func (n) {
+  if (n === 0) {
+    return 0;
+  } else if (n < 0) {
+    return Infinity;
+  }
+  return Math.min(Math.min(func(n - 1), func(n - 2)), func(n - 5)) + 1;
+}
 
 // 优化递归存在的重复计算的问题
 // 比如 f(12) = min{ f(11), f(10), f(7)} 计算了一遍f(10)
 // 而递归计算f(11)时，又计算了一遍 f(10)
 
-function check(n) {
+function check (n) {
   let min;
-  let cacheMap = new Array(n+1).fill(Infinity); 
+  let cacheMap = new Array(n + 1).fill(Infinity);
   cacheMap[0] = 0;
-  function checkmap(n) {
-    if(n<0){
+  function checkmap (n) {
+    if (n < 0) {
       return Infinity;
-    }else if(n === 0) {
+    } else if (n === 0) {
       return 0;
     }
-    if(cacheMap[n] !== Infinity) {
+    if (cacheMap[n] !== Infinity) {
       return cacheMap[n];
     } else {
-      min = Math.min(Math.min(checkmap(n-1), checkmap(n-2)), checkmap(n-5)) + 1 ;
+      min = Math.min(Math.min(checkmap(n - 1), checkmap(n - 2)), checkmap(n - 5)) + 1;
       cacheMap[n] = min;
       return min;
     }
@@ -124,15 +124,41 @@ function check(n) {
   return checkmap(n);
 }
 
+/**
+ * dp:[0][1][1][2][2] [1][2][2][3][3] [2][3][3][4][4] [3][..]
+ * f(n) = min{ f(n-5) + 1, f(n-2) + 1, f(n-1)+1 }
+ *
+ * **/
+
+const coinChange = (coins, amount) => {
+  // 初始化备忘录,用Infinity填满备忘录，Infinity说明该值不可以用硬币凑出来
+  const dp = new Array(amount + 1).fill(Infinity)
+
+  // 设置初始条件为 0
+  dp[0] = 0
+
+  for (var i = 1; i <= amount; i++) {
+    // 计算最后一枚为coin面值时的动态转移
+    for (const coin of coins) {
+      // 根据动态转移方程求出最小值
+      if (coin <= i) {
+        dp[i] = Math.min(dp[i], dp[i - coin] + 1)
+      }
+    }
+  }
+
+  // 如果 `dp[amount] === Infinity`说明没有最优解返回-1,否则返回最优解
+  return dp[amount] === Infinity ? -1 : dp[amount]
+}
 
 /**
  * 移除字符串最后一个指定的目标字符串
  * 使用字符串方法
  * **/
-function delLastString(str, target) {
+function delLastString (str, target) {
   let index = str.lastIndexOf(target);
-  if(index > -1){
-    return str.slice(0,index) + str.slice(index + 1);
+  if (index > -1) {
+    return str.slice(0, index) + str.slice(index + 1);
   }
   return str;
 }
@@ -142,41 +168,41 @@ function delLastString(str, target) {
  * 将下划线_命名改为大驼峰命名
  * dufbh_edjrf  --> DufbhEdjrf
 */
-function toCamelCase(str) {
+function toCamelCase (str) {
   const reg = /(^|_)(\w)/g;
-  return str.replace(reg, (match,$1,$2)=>$2.toUpperCase());
+  return str.replace(reg, (match, $1, $2) => $2.toUpperCase());
 }
-function strToCamelCase(str) {
+function strToCamelCase (str) {
   return str
-  .split('_')
-  .map(item=>{
-    if(item === ''){
-      return '_'
-    }
-    return item[0].toUpperCase()+item.slice(1);
-  })
-  .join('');
+    .split('_')
+    .map(item => {
+      if (item === '') {
+        return '_'
+      }
+      return item[0].toUpperCase() + item.slice(1);
+    })
+    .join('');
 }
 
 /**
  * 大小写转换
  * **/
-function transCode(str) {
-  return str.replace(/([a-z]*)([A-Z]*)/g, (m, $1, $2)=> {
+function transCode (str) {
+  return str.replace(/([a-z]*)([A-Z]*)/g, (m, $1, $2) => {
     return $1.toUpperCase() + $2.toLowerCase();
   })
 }
 
-function transCode1(str) {
-  if(!str.length) {
+function transCode1 (str) {
+  if (!str.length) {
     return 'error!'
   }
   return str.split('').map(item => {
     let temp = item.charCodeAt();
-    if(97<=temp<=122){
+    if (97 <= temp <= 122) {
       return item.toUpperCase();
     }
-    if(65<=temp<=90) {
+    if (65 <= temp <= 90) {
       return item.toLowerCase();
     }
     return item;
@@ -188,20 +214,43 @@ function transCode1(str) {
  * aaabdcaasda  aa在其中出现 3次
  *
  * **/
-function getTotalStr(str, target) {
+function getTotalStr (str, target) {
   let count = 0;
-  if(!target){
+  if (!target) {
     return count;
   }
-  while(str.includes(target)) {
+  while (str.includes(target)) {
     count++;
-    str = str.substring(str.indexOf(target)+1);
+    str = str.substring(str.indexOf(target) + 1);
   }
   return count;
 }
-function getTotalStrByReg(str, target) {
+function getTotalStrByReg (str, target) {
   // 正向零宽断言 假设等于target·
   const matchs = str.match(new RegExp(`(?=${target})`, 'g'));
-  return matchs? matchs.length: 0;
+  return matchs ? matchs.length: 0;
 }
-console.log(getTotalStrByReg('aaabaabsa','aa'));
+
+
+/**
+ * 实现字符串的简单加密和解密
+ * **/
+var aa = "Hello world!";
+String.prototype.encrypt = function(salt=8) {
+  let str = '';
+  for(let i=0; i<this.length; i++) {
+    str+= String.fromCharCode(this.charCodeAt(i)+salt);
+  }
+  return str;
+}; //添加到String原型链.
+
+String.prototype.decrypt = function(salt=8) {
+  let str = '';
+  for(let i=0; i<this.length; i++) {
+    str+= String.fromCharCode(this.charCodeAt(i)-salt);
+  }
+  return str;
+}; //添加到String原型链.
+
+console.log("Hello  World!".encrypt()); 
+console.log("Pmttw((_wztl)".decrypt()); 
