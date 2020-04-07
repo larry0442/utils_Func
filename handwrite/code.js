@@ -252,5 +252,17 @@ String.prototype.decrypt = function(salt=8) {
   return str;
 }; //添加到String原型链.
 
-console.log("Hello  World!".encrypt()); 
-console.log("Pmttw((_wztl)".decrypt()); 
+
+/**
+ * 获取网页当前url的查询字符串
+ * 
+ * **/
+const getSearchParam = (param) => {
+  const search = window.location.search;
+  let res = {};
+  search.slice(1).split('&').forEach(item=> {
+    const [key, value] = item.split('=');
+    res[key] = value;
+  })
+  return res[param];
+}
