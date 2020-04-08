@@ -266,3 +266,4 @@ const getSearchParam = (param) => {
   })
   return res[param];
 }
+

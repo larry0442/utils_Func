@@ -7,23 +7,69 @@ const randomSort = (arr=[]) => {
   return arr;
 }
 
-console.log(randomSort([1,2,3,4,5,6,7,8,9]));
-
-const lodash  = require('lodash');
-console.log(lodash.shuffle([1,2,3,4,5,6,7,8,9]));
-
-function _new() {
-  let newObj =  null,
-      constructor = Array.prototype.shift.call(arguments),
-      result = null;
-  if(typeof constructor !== 'function') {
-    return;
+function deepClone(obj) {
+  let newObj = Array.isArray(obj) ? [] : {};
+  for( let key in obj) {
+    if(obj.hasOwnProperty(key)){
+      newObj[key] = typeof obj[key] === 'object'? deepClone(obj[key]) : obj[key];
+    }
   }
-  newObj = Object.create(constructor.prototype);
+  return newObj;
+}
 
-   // 将 this 指向新建对象，并执行函数
-  result = constructor.apply(newObj, arguments);
-  
-  let flag = result && (typeof result === 'object' || typeof result === 'function');
-  return flag ? result: newObj;
+Function.prototype.myCall = function(context) {
+  if(typeof this !== 'function') {
+    throw new Error('typeError');
+  }
+  let result = null;
+  context = context || window;
+
+  let args = [...arguments].slice(1);
+  context.fn = this;
+  result = context.fn(...args);//call ：  一个一个参数传进
+  delete context.fn;
+  return result;
+}
+
+Function.prototype.myApply = function(context) {
+  if(typeof this !== 'function') {
+    throw new Error('typeError');
+  }
+  let result = null;
+  context = context || window;
+  context.fn = this;
+  if(arguments[1]) {
+    result = context.fn(...arguments[1]);
+  }else {
+    result = context.fn();
+  }
+
+  return result;
+}
+
+Function.prototype.myBind = function(context) {
+  let args = [...arguments].slice(1);
+  let fn = this;
+  return function Fn() {
+    return fn.apply(
+      this instanceof Fn? this: context,
+      args.concat(...arguments)
+    )
+  }
+}
+function curry() {
+   // 第一次执行时，定义一个数组专门用来存储所有的参数
+  let args = Array.prototype.slice.call(arguments);
+  // 在内部声明一个函数，利用闭包的特性保存_args并收集所有的参数值
+  let _adder = function() {
+    args.push(...arguments);
+    return _adder;
+  }
+   // 利用toString隐式转换的特性，当最后执行时隐式转换，并计算最终的值返回
+  _adder.toString = function () {
+    return _args.reduce(function (a, b) {
+        return a + b;
+    });
+  }
+  return _adder;
 }
