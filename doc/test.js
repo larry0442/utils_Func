@@ -1,75 +1,136 @@
-const randomSort = (arr=[]) => {
-  const length = arr.length;
-  for(let index = 0; index < length; index++) {
-    let randomIndex = Math.floor(Math.random()*(length - index)) + index;
-    [arr[index], arr[randomIndex]] = [arr[randomIndex], arr[index]]
+function maxArea(height) {
+  if(height.length < 2) {
+    return new TypeError('参数不符');
   }
-  return arr;
-}
-
-function deepClone(obj) {
-  let newObj = Array.isArray(obj) ? [] : {};
-  for( let key in obj) {
-    if(obj.hasOwnProperty(key)){
-      newObj[key] = typeof obj[key] === 'object'? deepClone(obj[key]) : obj[key];
+  let left = 0, right = height.length - 1, maxArea = 0;
+  while(left < right){
+    maxArea = Math.max((right - left) * Math.min(height[left], height[right]), maxArea);
+    if(height[left] <height[right]){
+      left = left + 1;
+    }else{
+      right = right - 1;
     }
   }
-  return newObj;
+  return maxArea;
+};
+
+/* 
+
+字符          数值
+I             1
+V             5
+X             10
+L             50
+C             100
+D             500
+M             1000
+*/
+const intToRoman = (num) => {
+  let res = '';
+  const numArr = [1000,900,500,400,100,90,50,40,10,9,5,4,1];
+  const strArr = ['M','CM','D', 'CD','C','XC','L','XL','X','IX','V','IV','I'];
+  for(let i= 0; i< numArr.length; i++) {
+    while(num >= numArr[i]) {
+      num = num - numArr[i];
+      res = res + strArr[i];
+    }
+  }
+  return res;
 }
 
-Function.prototype.myCall = function(context) {
-  if(typeof this !== 'function') {
-    throw new Error('typeError');
-  }
-  let result = null;
-  context = context || window;
 
-  let args = [...arguments].slice(1);
-  context.fn = this;
-  result = context.fn(...args);//call ：  一个一个参数传进
-  delete context.fn;
-  return result;
+
+var int2Roman = function(num) {
+  let res = '';
+  const numArr = [1000,900,500,400,100,90,50,40,10,9,5,4,1];
+  const strArr = ['M','CM','D', 'CD','C','XC','L','XL','X','IX','V','IV','I'];
+  let temp = num;
+  let times;
+  for(let i = 0;i< numArr.length; i++) {
+      times= ~~(temp/numArr[i]);
+      temp = temp % numArr[i]; 
+      while(times) {
+          res = res + strArr[i];
+          times = times - 1;
+      }
+  }
+  return res;
 }
 
-Function.prototype.myApply = function(context) {
-  if(typeof this !== 'function') {
-    throw new Error('typeError');
-  }
-  let result = null;
-  context = context || window;
-  context.fn = this;
-  if(arguments[1]) {
-    result = context.fn(...arguments[1]);
-  }else {
-    result = context.fn();
-  }
 
-  return result;
+// 'MMMCM' -> 3900
+const romanToInt = (str) => {
+  const mapper = {'M':1000,'CM': 900,'D': 500, 'CD': 400,'C':100,'XC':90,'L':50,'XL':40,'X':10,'IX':9,'V':5,'IV':4,'I':1};
+  let resArr = [];
+  for(let i = 0; i< str.length; i++) {
+    resArr[i] = mapper[str[i]];
+  }
+  console.log(resArr);
+  let res = resArr[0];
+  if(resArr.length === 1) {
+    return res;
+  }
+  for (let index = 1; index < resArr.length; index++) {
+    if(resArr[index] >resArr[index -1]){
+      res = res + resArr[index] - (2*resArr[index -1]);
+    }else {
+      res = res + resArr[index];
+    }
+    
+  }
+  return res;
 }
 
-Function.prototype.myBind = function(context) {
-  let args = [...arguments].slice(1);
-  let fn = this;
-  return function Fn() {
-    return fn.apply(
-      this instanceof Fn? this: context,
-      args.concat(...arguments)
-    )
+// string[] 的最长公共前缀
+var longestCommonPrefix = function(strs) {
+  if(!strs.length) {
+    return '';
   }
+  let res = strs[0];
+  for(let i = 0; i<strs.length; i++) {
+    let j = 0;
+    for(;j < res.length && j < strs[i].length; j++){
+      if(res[j] !== strs[i][j]){
+        break;
+      }
+    }
+    res = res.substr(0,j);
+  }
+  return res;
+};
+
+// 分支法
+var longestCommonPrefix1 = function(strs) {
+  if(strs.length == 0){
+    return '';
+  }
+  const length = strs.length;
+  return commonPrefix(strs, 0, length-1);
 }
-function curry() {
-   // 第一次执行时，定义一个数组专门用来存储所有的参数
-  let args = Array.prototype.slice.call(arguments);
-  // 在内部声明一个函数，利用闭包的特性保存_args并收集所有的参数值
-  let _adder = function() {
-    args.push(...arguments);
-    return _adder;
+
+// strs  => [strsLeft]&[strsRight] => strLeft & strRight
+// 数组  => 子数组 => 子数组（只有两个字符串）
+function commonPrefix(strs, left, right) {
+  if(left === right) {
+    // 只有一个字符串的情况
+    return strs[left];
   }
-   // 利用toString隐式转换的特性，当最后执行时隐式转换，并计算最终的值返回
-  _adder.toString = function () {
-    return _args.reduce(function (a, b) {
-        return a + b;
-    });
-  }
-  return _adder;
+  const mid = Math.floor((right + left)/2);
+  const leftStrs = commonPrefix(strs, left, mid);
+  const rightStrs = commonPrefix(strs, mid + 1, right);
+  return prefix(leftStrs,rightStrs);
 }
+
+function prefix(strLeft, strRight) {
+  // 主要逻辑： 处理两个字符串
+  const minLength = Math.min(strLeft.length, strRight.length);
+  for(let i = 0; i< minLength; i++) {
+    if(strLeft.charAt(i) !== strRight.charAt(i)) {
+      // 前面 0 ~ i-1都相等，到了i不相等 0 ~ i-1长度是 i
+      return strLeft.substr(0,i)
+    }
+  }
+  // 循环完没有return表示strLeft和strRight在前 minLength 每个字符都相等
+  return strLeft.substr(0, minLength);
+}
+console.log(longestCommonPrefix1(["flower","flow","flight"]));
