@@ -133,4 +133,115 @@ function prefix(strLeft, strRight) {
   // 循环完没有return表示strLeft和strRight在前 minLength 每个字符都相等
   return strLeft.substr(0, minLength);
 }
-console.log(longestCommonPrefix1(["flower","flow","flight"]));
+
+
+// '101' (5)=> 1
+// odd => +1
+// even => /2
+
+// 5=> 5+1=> (5+1)/2 => 3+1 => (3+1)/2= 2/2 =>1
+const numSteps = (s) => {
+  let arr = s.split('');
+  let steps = 0;
+  while(arr.length !== 1){
+    // 偶数 二进制末位0、奇数二进制末位1 
+    if(arr[arr.length-1] === '0'){
+      arr.pop(); 
+    }else {
+      addOne(arr);
+    }
+    steps++;
+  }
+  return steps;
+}
+const addOne = (arr) => {
+  let flag = false; // 进位标识
+  let maxIndex = arr.length -1;
+  arr[maxIndex] = '0';
+  for(let i = maxIndex-1; i>=0; i--){
+    if(arr[i] === '1'){
+      // 进位
+      arr[i] = '0';
+      flag = true;
+    } else {
+      arr[i] = '1';
+      flag = false;
+      break;
+    }
+    if(flag){
+      // 有进位
+      arr.unshift('1')
+    }
+  }
+  return arr;
+}
+
+// dp算法
+/**
+ * stoneValue : number []
+ * 每次可以取走1,2，或者3个数
+ * 最后累计判断和最大为胜
+ * dp[i] 表示我在i~末尾中，我能赢对面多少分，
+ * 在 i这个位置，我尽量赢对面多的分
+ * 那么，在i+1这个位置，对方也是采取最优策略，也会尽量赢我们
+ * 所以就是看谁一开始就占尽优势
+ * 只要dp[0] 是 大于 0 ,那我就赢了呀
+ * **/
+const stoneGame = (stoneValue) => {
+  const length = stoneValue.length;
+  const dp = new Array(length+3).fill(0);
+  stoneValue.push(0);
+  stoneValue.push(0);
+  for(let i = length-1; i>=0; i--) {
+    const x = stoneValue[i] - dp[i+1];
+    const y = stoneValue[i] + stoneValue[i+1] - dp[i+2];
+    const z = stoneValue[i] + stoneValue[i+1] + stoneValue[i+2] - dp[i+3];
+    dp[i] = Math.max(x, y, z);
+    console.log(dp[i]);
+  }
+  return dp;
+}
+
+// 返回满足a+b+c = 0;
+/** 
+ * 1: x = 0;
+ * 2: a, b = -a
+ * 3: a, b, c = -(a+b);
+ * 暴力法  n^3
+ * 预排序 + 双指针 O(n^2*logn)
+ **/
+var threeSum = function(nums) {
+  let result = [];
+  nums = nums.sort((a,b)=> b - a );
+  if(nums.length <3) {
+    return result;
+  }
+  let length = nums.length;
+  for(let i = 0; i<length-3; i++) {
+    if(nums[i]<0) {
+      break;
+    }
+    let target = nums[i],
+        j = i+1,
+        k = length -1;
+        console.log(i,j,k);
+        while(j<k) {
+          if((nums[j] + nums[k] + target) === 0) {
+            // 
+            result.push([nums[i],nums[j], nums[k]]);
+            // 避免重复
+          //   while((j<k) && (nums[j] === nums[j+1])){
+          //     j++;
+          //   }
+          //   while((j<k) && (nums[k] === nums[k-1])){
+          //     k--;
+          //   }
+          // }else{
+          //   k--;
+          }
+          k--;
+        }
+  }
+  return result;
+};
+console.log(threeSum([0,1,2,3,4,5,6,-1,-2,-5,-5]))
