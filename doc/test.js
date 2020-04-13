@@ -212,36 +212,69 @@ const stoneGame = (stoneValue) => {
  **/
 var threeSum = function(nums) {
   let result = [];
-  nums = nums.sort((a,b)=> b - a );
+  nums = nums.sort((a,b)=> a - b );
   if(nums.length <3) {
     return result;
   }
   let length = nums.length;
-  for(let i = 0; i<length-3; i++) {
-    if(nums[i]<0) {
+  for(let i = 0; i<length-2; i++) {
+    if(i>0  && nums[i] === nums[i-1]){
+      continue;// 避免重复的值i = -1, i+1 = -1 时计算，但是 i = -1, i-1 = -1时，跳过，因为前面i-1时已经计算
+    }
+    if(nums[i]>0) {
       break;
     }
-    let target = nums[i],
-        j = i+1,
-        k = length -1;
-        console.log(i,j,k);
-        while(j<k) {
-          if((nums[j] + nums[k] + target) === 0) {
-            // 
-            result.push([nums[i],nums[j], nums[k]]);
-            // 避免重复
-          //   while((j<k) && (nums[j] === nums[j+1])){
-          //     j++;
-          //   }
-          //   while((j<k) && (nums[k] === nums[k-1])){
-          //     k--;
-          //   }
-          // }else{
-          //   k--;
-          }
+    j = i+1,
+    k = length -1;
+    while(j<k) {
+      const sum = nums[i]+ nums[j]+nums[k];
+      if(sum === 0){
+        result.push([nums[i], nums[j], nums[k]]);
+        while(nums[j] === nums[j+1]) {
+          j++;
+        }
+        while(nums[k] === nums[k-1]) {
           k--;
         }
+        k--;
+      }else if(sum > 0){
+        k--;
+      }else{
+        j++;
+      }
+    }
   }
   return result;
 };
-console.log(threeSum([0,1,2,3,4,5,6,-1,-2,-5,-5]))
+// console.log(threeSum([-1,0,1,2,-1,-4]))
+
+var threeSumClosest = function(nums, target) {
+  let result = 0;
+  let diff = Infinity;
+  nums = nums.sort((a,b)=> a - b );
+  if(nums.length <3) {
+    return result;
+  }
+  let length = nums.length;
+  for(let i = 0; i<length-2; i++) {
+    if(i>0  && nums[i] === nums[i-1]){
+      continue;// 避免重复的值i = -1, i+1 = -1 时计算，但是 i = -1, i-1 = -1时，跳过，因为前面i-1时已经计算
+    }
+    j = i+1,
+    k = length -1;
+    while(j<k) {
+      const sum = nums[i]+ nums[j]+nums[k];
+      const tmp = Math.abs(sum - target);
+      if(tmp < diff){
+        diff = tmp;
+        result = sum;
+      }else if(sum > target){
+        k--;
+      }else{
+        j++;
+      }
+    }
+  }
+  return result;
+};
+
