@@ -277,4 +277,94 @@ var threeSumClosest = function(nums, target) {
   }
   return result;
 };
+// 
+const fullParseArr = (nums) => {
+  if(!nums.length) {
+    return [];
+  }
+  const length = nums.length;
+  const current=[],result = [];
+  const dfs = (current) => {
+    if(current.length === length){
+      result.push(current);
+      return;
+    }
+    for(let i = 0; i<length;i++){
+      if(current.indexOf(nums[i]) === -1){
+        current.push(nums[i]);
+        dfs(current.slice());
+        current.pop();
+      }
+    }
+  }
+  dfs(current);
+  return result;
+}
 
+const ParseStr = (strs) => {
+  if(!strs.length) {
+    return [];
+  }
+  const length = strs.length;
+  const current='',result = [];
+  const dfs = (current) => {
+    if(current.length === length){
+      result.push(current);
+      return;
+    }
+    for(let i = 0; i<length;i++){
+      if(current.indexOf(strs[i]) === -1){
+        dfs(current+strs[i]);
+      }
+    }
+  }
+  dfs(current);
+  return result;
+}
+/**
+ * 输入包含2~9的字符串 
+ * 2：'abc'
+ * 3: 'def'
+ * 4: 'ghi'
+ * 5: 'jkl'
+ * 6: 'mno'
+ * 7: 'pqrs'
+ * 8: 'tuv'
+ * 9: 'wxyz'
+ * **/
+var letterCombinations = function(digits) {
+  if(!digits.length){
+    return [];
+  }
+  const hMap = {
+    2:'abc',
+    3:'def',
+    4:'ghi',
+    5:'jkl',
+    6:'mno',
+    7:'pqrs',
+    8:'tuv',
+    9:'wxyz',
+  }
+  const length = digits.length;
+  let current = '',
+    result = [];
+  const dfs = (k, current) =>{
+    if(current.length === length) {
+      result.push(current);
+      return;
+    }
+    // 注意index = k;是为了避免出现 aa这样的重复项
+    for(let index = k; index < digits.length; index++){
+      const digit = digits[index];
+      for(let i = 0; i<hMap[digit].length;i++) {
+        current = current+ hMap[digit][i];
+        dfs(index+1, current);
+        current = current.substr(0,current.length-1);  
+      }
+    }
+  }
+  dfs(0, current);
+  return result;
+};
+console.log(letterCombinations('234'));
