@@ -367,4 +367,3 @@ var letterCombinations = function(digits) {
   dfs(0, current);
   return result;
 };
-console.log(letterCombinations('234'));
