@@ -4,7 +4,7 @@
 2. 变量类型： 可以设置成不同类型，number/string/boolean等等，动态类型：（弱类型，无需声明时规定类型）
 3. 变量的数据类型与typeof操作符
    可以直接声明的类型例如：let num = 8
-   - Number： number / bigInt / NaN
+   - Number： number / bigInt / NaN / +-Infinity
    - Boolean: true/false
    - String: '',
    - Array
@@ -47,7 +47,15 @@
     - 引用计数 赋值一次引用+1， 计数为0时回收（存在循环引用的问题）
     - v8中的内存回收 分代回收（大部分新生对象倾向于早死，不死的对象存活的更久/或者说存活越久的对象，越不可能是垃圾？）新生代区回收频繁。[这里讲的详细一点](https://www.jianshu.com/p/b8ed21e8a4fb)
 ## 引用类型
+### javaScript 数据类型分为基本数据类型7种和引用类型Object
+  1. 区分堆内存 和 栈内存(基本类型变量存储的地方)
+  2. 引用类型 在栈中保存的实际是 对象在堆内存中的一个指针
+  3. 深拷贝（怎么实现：递归、JSON.parse/stringify）和浅拷贝 浅拷贝是因为拷贝的是引用，指向的都是同一个堆内存地址
+  4. 对象的属性配置 configurable/enumerable/writable/value set() 和get()
 ## 面向对象
+  1. 继承 [看这里](https://juejin.im/post/5e75e22951882549027687f9)
+  2. 原型，原型链，还有构造函数的概念以及相互之间的关系
+  3. 创建对象的方法： 字面量/工厂模式/构造函数/原型链。。（后面还有的不熟悉，回头看红皮书）
 ## 函数表达式
 ## BOM
 ## DOM
