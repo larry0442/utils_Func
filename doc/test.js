@@ -367,3 +367,26 @@ var letterCombinations = function(digits) {
   dfs(0, current);
   return result;
 };
+
+const letterSpread = (str) => {
+  const length = str.length;
+  let current = '', result = [];
+  const dfs = (current) => {
+    if(current.length === length) {
+      result.push(current);
+      return;
+    }
+    for(let i = 0; i< length; i++) {
+      if(current.indexOf(str[i]) == -1){
+        current = current + str[i];
+        dfs(current);
+        current = current.substr(0, current.length -1)
+      }
+     
+    }
+  }
+  dfs(current);
+  return result;
+
+}
+// console.log(letterSpread('abcd'));
