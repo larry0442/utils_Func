@@ -1906,7 +1906,7 @@ letter-spacing可以用来控制字符之间的间距，这里说的“字符”
 letter-spacing具有以下一些特性。
 
 （1）继承性。
-（2）默认值是normal而不是0。虽然说正常情况下，normal的计算值就是0，但两者还是有差别的，在有些场景下，letter-spacing会调整normal的计算值以实现更好的版面布局。
+（2）默认值是 normal 而不是0。虽然说正常情况下，normal 的计算值就是0，但两者还是有差别的，在有些场景下，letter-spacing 会调整 normal 的计算值以实现更好的版面布局。
 （3）支持负值，且值足够大的时候，会让字符形成重叠，甚至反向排列。
 （4）和text-indent属性一样，无论值多大或多小，第一行一定会保留至少一个字符。
 （5）支持小数值，即使0.1px也是支持的。
@@ -1916,8 +1916,8 @@ letter-spacing具有以下一些特性。
 #### 94.word-spacing 与单词间距？
 
 ```
-letter-spacing作用于所有字符，但word-spacing仅作用于空格字符。换句话说，word-spacing的作用就是增加空格的间隙
-宽度。
+letter-spacing 作用于所有字符，但 word-spacing 仅作用于空格字符。换句话说，word-spacing 的作用就是增加空格的间隙宽度。
+
 ```
 
 #### 95.white-space 与换行和空格的控制？
@@ -2017,7 +2017,8 @@ p:after {
 #### 99.css 实现上下固定中间自适应布局？
 
 ```css
-利用绝对定位实现body {
+利用绝对定位实现
+body {
   padding: 0;
   margin: 0;
 }
@@ -2046,7 +2047,8 @@ p:after {
   background: red;
 }
 
-利用flex布局实现html,
+利用flex布局实现
+html,
 body {
   height: 100%;
 }
@@ -2119,13 +2121,13 @@ body {
   flex-shrink: 0;
   flex-grow: 0;
   flex-basis: 200px;
-
+  /* flex: 0 0 200px; */
   background: tomato;
 }
 
 .right {
   flex: auto;
-  /*11auto*/
+  /*1 1 auto*/
 
   background: gold;
 }
@@ -2243,12 +2245,12 @@ body {
 }
 
 .left {
-  flex: 00100px;
+  flex: 0 0 100px;
   background: tomato;
 }
 
 .right {
-  flex: 00200px;
+  flex: 0 0 200px;
   background: gold;
 }
 
@@ -2283,7 +2285,7 @@ body {
   background: lightgreen;
 }
 
-/*（4）双飞翼布局，利用浮动和负边距来实现。父级元素设置左右的pedding，三列均设置向左浮动，中间一列放在最前面，宽度设置为父级元素的宽度，因此后面两列都被挤到了下一行，通过设置margin负值将其移动到上一行，再利用相对定位，定位到两边。*/
+/*（4）圣杯布局，利用浮动和负边距来实现。父级元素设置左右的pedding，三列均设置向左浮动，中间一列放在最前面，宽度设置为父级元素的宽度，因此后面两列都被挤到了下一行，通过设置margin负值将其移动到上一行，再利用相对定位，定位到两边。*/
 .outer {
   height: 100px;
   padding-left: 100px;
@@ -2292,10 +2294,10 @@ body {
 
 .left {
   position: relative;
-  left: -100px;
+  left: -100px; // 负本身100px
 
   float: left;
-  margin-left: -100%;
+  margin-left: -100%;// (100%是中间一列的值)
 
   width: 100px;
   height: 100px;
@@ -2307,7 +2309,7 @@ body {
   left: 200px;
 
   float: right;
-  margin-left: -200px;
+  margin-left: -200px; // 左移本身的width值
 
   width: 200px;
   height: 100px;
