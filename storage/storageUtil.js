@@ -124,3 +124,53 @@ export const cookieRemove = (key) => {
 
 
 
+// 大概是一个简化版的ajax请求
+
+/*
+知识点
+  - xhr请求过程
+  - xhr请求的方法/参数
+  onreadyStateChange
+*/ 
+
+export function ajax(options){
+  // url type data success fail
+  let { url, type, data, success, fail } = options;
+  type = type.toUpperCase();
+
+  const xhr = new XMLHttpRequest();
+   
+  // 处理请求数据
+  let dataStr = '';
+  if(typeof data === 'object') {
+    for(let key in data) {
+      dataStr += `key=${encodeURIComponent(data[key])}&`
+    }
+  }
+  dataStr += 't=' + Math.random().replace('.', '');
+
+  // 根据请求方式处理
+  // get 数据随url
+  // data 数据在body
+  if(type === 'GET') {
+    xhr.open('GET', url + '?' + data, true);
+    xhr.send();
+  } else {
+    xhr.open('POST', url, true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-from-urlencoded');
+    xhr.send(dataStr);
+  }
+
+  // 监听回调
+  xhr.onreadystatechange = function() {
+    if(xhr.readyState === 4) {
+      if(xhr.status === 200) {
+        // 成功的回调,将请求信息返回
+        success && success(xhr.responseText);
+      } else {
+        // 失败的回调
+        fail && fail(xhr.status); 
+      }
+    }
+  }
+}
