@@ -2389,7 +2389,7 @@ body {
 ```css
 /*1.第一种方式是利用vw来实现*/
 .square {
-  width: 10%;
+  width: 10vw;
   height: 10vw;
   background: tomato;
 }
