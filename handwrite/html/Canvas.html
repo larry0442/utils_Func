@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canvas的使用</title>
+</head>
+<body>
+  <div>canvas的各种形状的使用</div>
+  <div>直线</div>
+  <canvas id="line"  width="200" height="100"></canvas>
+  <div>矩形</div>
+  <canvas id="rect"  width="200" height="100"></canvas>
+  <div>圆</div>
+  <canvas id="circle"  width="200" height="100"></canvas>
+  <div>三角形</div>
+  <canvas id="tri"  width="200" height="100"></canvas>
+</body>
+<script>
+  // line 
+  const line = document.getElementById('line');
+  const line_ctx = line.getContext('2d');
+  line_ctx.moveTo(0, 0);
+  line_ctx.lineTo(200, 100);
+  line_ctx.stroke();
+
+  // rect
+  const rect = document.getElementById('rect');
+  const rect_ctx = rect.getContext('2d');
+  rect_ctx.fillStyle = "#ff6700";
+  rect_ctx.fillRect(0,0,100,150);
+
+  // circle
+  const circle = document.getElementById('circle');
+  const circle_ctx = circle.getContext('2d');
+  circle_ctx.beginPath();
+  circle_ctx.arc(50, 50, 50, 0, 2*Math.PI);
+  circle_ctx.stroke();
+</script>
+</html>
