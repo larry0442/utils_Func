@@ -267,3 +267,71 @@ const getSearchParam = (param) => {
   return res[param];
 }
 
+
+// 手写call函数
+/* 
+  首先call()的参数为：thisArg,arg1,arg2,...argn
+*/
+Function.prototype.callFn = function(context) {
+  // 参数判断，没有则指向window
+  context = contenxt || window;
+
+  // 获取参数，去除第一个this指向，剩余取出来要作为参数给fn
+  let args = [...arguments].slice(1);
+
+  // 给context 添加一个方法，指向this
+  context.fn = this;
+
+  // 传入参数，作为调用call函数的外部函数的参数
+  context.fn(...args);
+  
+  // 删除fn属性
+  delete context.fn;
+  
+}
+
+// 手写apply函数
+Function.prototype.applyFn = function(context) {
+  context = context || window;
+
+  // 参数
+  let args = [...arguments].slice(1);
+
+  context.fn = this;
+
+  context.fn(args);
+}
+
+// 手写bind， 
+Function.prototype.bindFn = function(context) {
+  // 调用bind的一定是个函数，否则出错
+  if (typeof this !== "function") {
+    throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable");
+  }
+  let self = this;
+  // 参数
+  let args = [...arguments].slice(1);
+  return function() {
+    let newArgs = [...arguments];
+    return self.apply(context, [args, ...newArgs]);
+  }
+}
+
+// new 函数
+
+/* 
+  1. 创建一个新对象
+  2. 将构造函数的作用域赋给新对象
+  3. 执行构造函数中的代码
+  4. 返回新对象
+*/
+
+let newMethod = function(parent, ...rest) {
+  // 创建新对象
+  let child = Object.create(parent.prototype);
+  // this调用参数传给构造函数
+  let result = parent.apply(child, rest);
+
+  //注意点， 构造函数没有显式返回对象时返回我们创建的对象
+  return typeof result === 'object' ? (result || child) : child;
+}
