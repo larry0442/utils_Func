@@ -6,6 +6,10 @@
 
 ### 1. 原型链继承
 ```js
+function Parent() {};
+
+function Child(){};
+
 child.prototype = new Parent();
 ```
 - 优点  
@@ -20,6 +24,7 @@ child.prototype = new Parent();
 
 在子类构造函数内部使用call或apply来调用父类构造函数
 ```js
+
 function Parent (name) {
   this.name = name
 }
@@ -54,8 +59,23 @@ console.log(child1);
   3. 修正子类构造函数原型对象的constructor属性，将它指向子类构造函数
    
 ```js
-// 原型链继承
+
+function Parent() {};
+// 原型的方法和属性
+Parent。prototype.getSomething() = function() {
+  // ...
+}
+
+function Child() {
+  // 实例方法和属性
+  function getName() {
+    // ...
+  }
+};
+
+// 原型链继承 继承原型的方法和属性
 Child.prototype = new Parent()
+
 // 构造函数继承
 function Child () {
   Parent.call(this, ...arguments)
@@ -69,3 +89,98 @@ function Child () {
 - 缺点  
   1. 父类构造函数调用两次new Parent() 和 Parent.call()
   2. 生成两个实例，子类实例中的属性和方法会覆盖子类原型(父类实例)上的属性和方法，
+
+### 4. 原型式（方法），ES5 的Object.create()方法规范了这个原型式继承
+步骤： 
+1. 声明过渡对象
+2. 过度对象的原型 继承父对象
+3. 返回过渡对象的原型
+
+```js
+  function inhertObject(parentObj) {
+    function F() {};       // 1.声明一个过渡对象
+    F.prototype = parentObj;  // 2. 过渡对象原型继承父对象
+    return new F();        // 3. 返回过渡对象
+  }
+```
+ES5 的Object.create()方法：
+```js
+  var person = {
+    name: 'Nick',
+    friend: ['Alice'],
+  }
+
+  var anotherPerson = Object.create(person);
+  anotherPerson.name = 'Ann';
+  anotherPerson.friend.push('Zow');
+  // 会影响到person的friend,因为是引用属性
+
+  // 另外一个参数（初始参数，覆盖同名属性）
+  var anotherPerson = Object.create(person, {
+    name: {
+      value: 'Ann', // 这里会直接覆盖name为： ‘Ann’
+    }
+  })
+```
+### 5. 寄生式
+可以算是对于原型式继承的拓展，封装
+1. 使用原型式创建新对象
+2. 拓展新对象
+3. 返回
+```js
+  function createObject(obj) {
+    // 创建
+    var o = new inhertObject(obj);
+    // 拓展
+    o.getName = function(name) {
+      // ...
+    }
+    // 返回
+    return o;
+  }
+```
+
+### 6.寄生组合式继承
+使用 **原型式** + **寄生式**
+解决前面**组合继承**需要调用两次构造函数的弊端
+1. 通过借用函数来继承属性
+2. 通过原型链的混成形式来继承方法
+  
+```js
+  // 寄生式：
+  function inhertObject(parentObj) {
+    function F() {};       // 1.声明一个过渡对象
+    F.prototype = parentObj;  // 2. 过渡对象原型继承父对象
+    return new F();        // 3. 返回过渡对象
+  }
+
+  function inhertPrototype(subClass, superClass) {
+    // 创建超类型原型的一个副本
+    var prototype = inhertObject(superClass);
+    // 为创建的副本添加constructor属性，弥补重写原型失去的默认的constructor属性
+    prototype.constructor = subClass;
+    // 将新创建的对象副本赋值给子类型的原型
+    subClass.prototype = prototype;
+  }
+```
+
+### 7. ES6的class（语法糖）
+```js
+class Person {
+  // 方法是类的默认方法，通过new命令生成对象实例时，自动调用该方法。一个类必须有constructor方法，如果没有显式定义，一个空的constructor方法会被默认添加。
+  constructor(name) {
+    this.name = name;
+  }
+
+}
+
+// 类使用 extends 继承
+// 子类必须在constructor方法中调用super方法，否则新建实例时会报错。
+// 这是因为子类没有自己的this对象，而是继承父类的this对象，然后对其进行加工。如果不调用super方法，子类就得不到this对象。
+class child extends Person {
+  constructor(...args) {
+    super(...args);
+  }
+}
+
+```

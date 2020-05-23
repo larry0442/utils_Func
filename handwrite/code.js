@@ -335,3 +335,19 @@ let newMethod = function(parent, ...rest) {
   //注意点， 构造函数没有显式返回对象时返回我们创建的对象
   return typeof result === 'object' ? (result || child) : child;
 }
+
+// 版本
+let newFn = function() {
+  // 创建新对象
+  const obj = new Object();
+  // 取得外部传入的构造器
+  const Constructor = [].shift.call(arguments);
+
+  var F = function() {};
+  F.prototype = Constructor.prototype;
+
+  obj = new F();
+
+  var ret = Constructor.apply(obj, arguments);
+  return typeof ret === 'object'? ret : obj;
+}
