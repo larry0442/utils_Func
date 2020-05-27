@@ -73,3 +73,61 @@ class _promise {
 
   }
 }
+
+// 数据劫持: 给key添加getter和setter
+function Observe(data) {
+  Object.keys(data).forEach(key => {
+    // 递归进行深度数据劫持
+    let val = data[key];
+    deepObv(val); // 依赖收集
+    let dep = new Dep();
+    Object.defineProperty(data, key, {
+      get() {
+        // 订阅(依赖收集)
+        Dep.target && dep.addSubs(Dep.target);
+        return val;
+      },
+      set(newVal) {
+        if(newVal === val){
+          return;
+        }
+        val = newVal;
+        deepObv(newVal);
+        dep.notify(); // 派发更新
+      }
+    })
+  })
+}
+
+// 递归进行深度劫持
+function deepObv(data) {
+  if(!data || typeof data !== 'object') {
+    return;
+  }
+  return new Observe(data);
+}
+
+// 发布和订阅:
+// 发布订阅主要靠的就是数组关系，订阅就是放入函数(依赖收集)，发布（派发更新）就是让数组里的函数执行
+function Dep() {
+  this.subs = [];
+}
+Dep.prototype = {
+  // 订阅
+  addSubs(sub) {
+    this.subs.push(sub);
+  },
+  // update
+  notify() {
+    this.subs.forEach(sub => sub.update());
+  }
+}
+
+// 监听函数
+function Wacher(fn) {
+  this.fn = fn;
+}
+
+Wacher.prototype.update = function() {
+  this.fn();
+}
