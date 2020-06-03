@@ -56,10 +56,10 @@ class _Promise {
       // 实现异步，状态为 pending 时，fulfill 和 reject 的回调存储起来
       if(this.state === STATE.PENDING) {
         this.fulfilledCallbacks.push(() => {
-          fulfill(this.onFulfilled(this.value));
+          onFulfilled(this.value);
         })
         this.rejectedCallbacks.push(() => {
-          reject(this.onRejected(this.reason));
+          onRejected(this.reason);
         })
       }
 
@@ -75,9 +75,25 @@ class _Promise {
     })
   }
 
+  // 1, 返回是一个promise，谁先完成就返回谁
+  // 2. 输入是一组promise
+  race(promises){
+    const promiseArr = Array.from(promises);
+    //
+    return  _Promise((resolve, reject) => {
+      if(promiseArr.length === 0){
+        return;
+      } else {
+        promiseArr.forEach(promise => {
+          promise.then(resolve,reject);
+        })
+      }
+    })
+  }
   finally() {
     
   }
+
 }
 
 module.exports = _Promise;
