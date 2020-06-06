@@ -25,6 +25,9 @@ border: 0.5px solid #e5e5e5;
  优点： 使用简单，可以实现圆角；缺点 模拟的，比较模糊很难看清楚是不是边框
 
  #### 4.使用伪元素
+优点：全机型兼容，实现了真正的1px，而且可以圆角。
+缺点：暂用了after 伪元素，可能影响清除浮动。
+
  将伪元素设置相对定位，并且和父元素的左上角对齐，将width 设置100%，height设置为1px，然后进行在Y方向缩小0.5倍。
  ```css
  .setOnePx{
@@ -62,3 +65,65 @@ border: 0.5px solid #e5e5e5;
       }
 
  ```
+
+ #### 5. 设置viewport的scale值
+ 这个解决方案是利用viewport+rem+js 实现的。
+
+```html
+<html>
+	<head>
+		<title>1px question</title>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<meta name="viewport" id="WebViewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">		
+		<style>
+			html {
+				font-size: 1px;
+			}			
+			* {
+				padding: 0;
+				margin: 0;
+			}
+			.top_b {
+				border-bottom: 1px solid #E5E5E5;
+			}
+			
+			.a,.b {
+                        box-sizing: border-box;
+				margin-top: 1rem;
+				padding: 1rem;				
+				font-size: 1.4rem;
+			}
+			
+			.a {
+				width: 100%;
+			}
+			
+			.b {
+				background: #f5f5f5;
+				width: 100%;
+			}
+		</style>
+		<script>
+			var viewport = document.querySelector("meta[name=viewport]");
+			//下面是根据设备像素设置viewport
+			if (window.devicePixelRatio == 1) {
+				viewport.setAttribute('content', 'width=device-width,initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no');
+			}
+			if (window.devicePixelRatio == 2) {
+				viewport.setAttribute('content', 'width=device-width,initial-scale=0.5, maximum-scale=0.5, minimum-scale=0.5, user-scalable=no');
+			}
+			if (window.devicePixelRatio == 3) {
+				viewport.setAttribute('content', 'width=device-width,initial-scale=0.3333333333333333, maximum-scale=0.3333333333333333, minimum-scale=0.3333333333333333, user-scalable=no');
+			}
+			var docEl = document.documentElement;
+			var fontsize = 32* (docEl.clientWidth / 750) + 'px';
+			docEl.style.fontSize = fontsize;
+		</script>
+	</head>
+	<body>
+		<div class="top_b a">下面的底边宽度是虚拟1像素的</div>
+		<div class="b">上面的边框宽度是虚拟1像素的</div>
+	</body>
+</html>
+
+```
