@@ -131,3 +131,25 @@ function Wacher(fn) {
 Wacher.prototype.update = function() {
   this.fn();
 }
+
+const a = ['64GB', '128GB'], b=['white', 'black'], c=['yes', 'no'];
+function createSku(...options) {
+  const result = [];
+  const dfs = (current, optionIndex)=> {
+    let option = options[optionIndex];
+    let isLast = optionIndex === options.length - 1;
+    for(let val of option){
+      let cur = current.concat(val);
+      if(isLast){
+        // 满足条件
+        result.push(cur);
+      } else {
+        // 不满足条件
+        dfs(cur, optionIndex+1);
+      }
+    }
+  }
+  dfs([],0);
+  return result;
+}
+createSku(a,b,c);
