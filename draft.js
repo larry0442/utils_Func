@@ -153,3 +153,23 @@ function createSku(...options) {
   return result;
 }
 createSku(a,b,c);
+
+function Observe(data) {
+  Object.keys(data).forEach(key => {
+    let val = data[key];
+    Object.defineProperty(data, key, {
+      get() {
+        // 在这里做依赖收集，就是订阅哪一些数据引用了我们这里的value
+        return val;        
+      },
+      set(newVal) {
+        if(newVal === val){
+          return;
+        }
+        val = newVal;
+        // 深度响应
+        // 派发更新 dep.notify();
+      }
+    })
+  })
+}
