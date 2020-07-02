@@ -351,3 +351,4 @@ let newFn = function() {
   var ret = Constructor.apply(obj, arguments);
   return typeof ret === 'object'? ret : obj;
 }
+// 使用时的方式 let obj = newFn(parent, arg1,arg2...)
