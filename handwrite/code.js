@@ -313,7 +313,7 @@ Function.prototype.bindFn = function(context) {
   let args = [...arguments].slice(1);
   return function() {
     let newArgs = [...arguments];
-    return self.apply(context, [args, ...newArgs]);
+    return self.apply(context, [...args, ...newArgs]);
   }
 }
 
