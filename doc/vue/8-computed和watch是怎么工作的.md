@@ -20,4 +20,4 @@ watch:
    默认情况下 在handler方法中 只监听obj这个属性它的引用的变化，我们只有给obj赋值的时候它才会监听到, 对更深一层得进行重新赋值，监听不到。
    想要监听应用类型的深层，可以使用 deep: true;
 3. 同一个组件被复用或者选择某些属性后重置data: 
-  Object.assign(this.$data, this.$options.data());
+  Object.assign(this.\$data, this.\$options.data());
