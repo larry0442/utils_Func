@@ -69,8 +69,12 @@ class _promise {
       }
     });
   }
-  finally(){
-
+  finally(cb){
+    let P = constructor;
+    return this.then(
+      value => P.resolve(cb()).then(()=>value),
+      error => P.resolve(cb()).then(()=>{throw error})
+    );
   }
 }
 
