@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <style>
+    #target {
+      width: 300px;
+      height: 300px;
+      background-color: red;
+      transform-origin: 50% 50%;
+    }
+  </style>
+</head>
+<body>
+  <div id="target"></div>
+  <div id="text"></div>
+  <script>
+    const expFactor = 0.05;
+    let initialTouches = [];
+    let currentMatrix = [1, 0, 0, 1, 0, 0]; // Initial identity matrix
+    let initialCenter = {};
+    const target = document.getElementById("target");
+    const text = document.getElementById("target");
+
+    target.addEventListener("touchstart", handleTouchStart);
+    target.addEventListener("touchmove", handleTouchMove);
+    target.addEventListener("touchend", handleTouchEnd);
+
+    function handleTouchStart(event) {
+      updateInitialTouches(event);
+    }
+
+    function updateInitialTouches(event) {
+      initialTouches = [...event.touches].map((touch) => ({ x: touch.clientX, y: touch.clientY }));
+    }
+
+    function handleTouchMove(event) {
+      event.preventDefault();
+      
+      if (event.touches.length === 1) {
+        // Handle translation
+        const touch = { x: event.touches[0].clientX, y: event.touches[0].clientY };
+        const deltaX = touch.x - initialTouches[0].x;
+        const deltaY = touch.y - initialTouches[0].y;
+        currentMatrix[4] += deltaX;
+        currentMatrix[5] += deltaY;
+        updateInitialTouches(event);
+
+      } else if (event.touches.length === 2) {
+        
+        const touch1 = { x: event.touches[0].clientX, y: event.touches[0].clientY };
+        const touch2 = { x: event.touches[1].clientX, y: event.touches[1].clientY };
+
+        // Handle multi-finger translation
+        const center = {
+          x: (touch1.x + touch2.x) / 2,
+          y: (touch1.y + touch2.y) / 2,
+        };
+        if (!initialCenter.x) {
+          initialCenter = center;
+        }
+        const deltaX = center.x - initialCenter.x;
+        const deltaY = center.y - initialCenter.y;
+        currentMatrix[4] += deltaX;
+        currentMatrix[5] += deltaY;
+        initialCenter = center;
+
+
+        // Handle scaling and rotation
+        const initialDistance = getDistance(initialTouches[0], initialTouches[1]);
+        const currentDistance = getDistance(touch1, touch2);
+        const initialAngle = getAngle(initialTouches[0], initialTouches[1]);
+        const currentAngle = getAngle(touch1, touch2);
+
+        // Handle scaling
+        const scale = (currentDistance - initialDistance)/initialDistance * expFactor;
+        currentMatrix[0] += scale;
+        currentMatrix[3] += scale;
+
+        // Handle rotation
+        const angleDiff = currentAngle - initialAngle;
+        const rotation = (angleDiff * Math.PI) / 180 * expFactor;
+        const cosA = Math.cos(rotation);
+        const sinA = Math.sin(rotation);
+        const a = currentMatrix[0];
+        const b = currentMatrix[1];
+        const c = currentMatrix[2];
+        const d = currentMatrix[3];
+        currentMatrix[0] = a * cosA - b * sinA;
+        currentMatrix[1] = a * sinA + b * cosA;
+        currentMatrix[2] = c * cosA - d * sinA;
+        currentMatrix[3] = c * sinA + d * cosA;
+      }
+
+      applyTransform();
+    }
+
+    function handleTouchEnd(event) {
+      // Reset initialTouches
+      initialTouches = [];
+      initialCenter = {};
+    }
+
+    function getDistance(touch1, touch2) {
+      const deltaX = touch2.x - touch1.x;
+      const deltaY = touch2.y - touch1.y;
+      return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+    }
+
+    function getAngle(touch1, touch2) {
+      const deltaX = touch2.x - touch1.x;
+      const deltaY = touch2.y - touch1.y;
+      return (Math.atan2(deltaY, deltaX) * 180) / Math.PI;
+    }
+
+    function applyTransform() {
+      const [a, b, c, d, e, f] = currentMatrix;
+      target.style.transform = `matrix(${a}, ${b}, ${c}, ${d}, ${e}, ${f})`;
+    }
+  </script>
+</body>
+</html>
